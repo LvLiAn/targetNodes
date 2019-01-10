@@ -1,0 +1,32 @@
+ZooKeeper:
+	
+　　ZooKeeper官网为：http://zookeeper.apache.org/
+
+　　Dubbo官网为：http://dubbo.io/
+
+　　Zookeeper在线API速查：http://zookeeper.apache.org/doc/r3.4.6/api/index.html
+
+　　Zookeeper学习：http://www.cnblogs.com/sunddenly/category/620563.html
+
+1、
+    1）zookeeper安装
+    ZooKeeper 安装路径：/home/jenkins/zookeeper
+	zookeeper/conf/zoo.cfg   配置文件，具体配置详解见 -->zookeeper配置详解.txt<--
+	ZooKeeper集群模式下包含多个zk进程，其中一个进程为leader，余下的进程为follower。
+		tickTime=2000                                // 客户端超时时间，tickTime的默认值为2000毫秒，更低的tickTime值可以更快地发现超时问题，但也会导致更高的网络流量（心跳消息）和更高的CPU使用率（会话的跟踪处理）
+		initLimit=10                                 // 当follower最初与leader建立连接时，它们之间会传输相当多的数据，尤其是follower的数据落后leader很多。initLimit配置follower与leader之间建立连接后进行同步的最长时间
+		syncLimit=5                                  // 配置follower和leader之间发送消息，请求和应答的最大时间长度。
+		dataDir=/home/jenkins/zookeeper/data         // 存储文件数据和日志的目录
+		dataLogDir=/home/jenkins/zookeeper/datalog   
+		
+		//  客户端在与zookeeper交互过程中会产生非常多的日志，而且zookeeper也会将内存中的数据作为snapshot保存下来，这些数据是不会被自动删除的，这样磁盘中这样的数据就会越来越多。不过可以通过这两个参数来设置
+		autopurge.purgeInterval=12                   // 设置多少小时清理一次
+		autopurge.snapRetainCount=3                  // 设置保留多少个snapshot，之前的则删除
+		snapCount=100000                             // 每进行snapCount次事务日志输出后，触发一次快照(snapshot), 此时，ZK会生成一个snapshot.*文件，同时创建一个新的事务日志文件log.*。默认是100000.（真正的代码实现中，会进行一定的随机数处理，以避免所有服务器在同一时间进行快照而影响性能
+		clientPort=2181                              // 服务端监听端口
+		maxClientCnxns=1000                          // 于一个客户端的连接数限制，默认是60，这在大部分时候是足够了
+		server.x=A:B:C                               // 这里的x代表是第几号服务器（与配置的host中的node1,2，3无实际关系，仅是一个编号），A代表X这台服务器的IP地址，B代表X这台服务器与集群中的Leader服务器交换信息的端口（与clientPort是不同的端口，功能也不同，是与Leader通讯），C代表万一集群中的Leader服务器挂了，需要一个端口来重新进行选举，选出一个新的Leader,这个端口就是用来执行选举时服务器间相互通信的端口(专门用于选举Leader的端口)。
+		
+	2）执行zkServer.sh脚本，输入jps查看是否启动成功    
+	
+2

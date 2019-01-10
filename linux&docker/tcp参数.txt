@@ -1,0 +1,25 @@
+Connection timed out 问题分析：
+	1、connection timed out 是client发出sync包，server端在指定的时间内没有回复ack导致的，没有回复ack的原因可能是网络丢包、防火墙阻止服务端返回syn的ack包等
+	
+	2、telnet测试centos6.7下的超时时间,这里指定一个不存在的ip地址和端口号
+
+		[root@SIT_PSBOTCA01 20181228]#  date "+%Y-%m-%d %H:%M:%S"; telnet 192.168.0.54 1121; date "+%Y-%m-%d %H:%M:%S"
+		2018-12-28 17:53:54
+		Trying 192.168.0.54...
+		telnet: connect to address 192.168.0.54: Connection timed out
+		2018-12-28 17:54:57
+	
+	3、在centos6.7下(不同的linux发行版设置的时间可能不一样)，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍， 2的0次方，1次方，2次方，3次方...
+		5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s都知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 2^6 -1 = 63s，TCP才会把断开这个连接。
+
+
+sysctl net.ipv4.tcp_syn_retries  查看linux tcp 重发次数
+sysctl net.ipv4.tcp_syn_retries=2 设置重发次数
+net.ipv4.tcp_syn_retries = 1  （2  3   4    5 ）  
+sysctl net.ipv4.tcp_keepalive_time 查看
+
+总结
+java中socket 
+不指定timeout，超时时间是通过操作系统底层tcpip参数决定的，不同操作系统的参数不一样(比如centos和mac的参数就不同)
+指定timeout，此时如果timeout设置的时间小于操作系统内核中设置的时间，则以指定的timeout为准。如果timeout设置的时间大于操作系统内核中的设置的时间，比如在centos6.7中设置sysctl net.ipv4.tcp_syn_retries=1(3s)，
+此时即使在java的socket参数上设置大于3s的值程序还是会在3s时超时(即在应用层设置时无效的)

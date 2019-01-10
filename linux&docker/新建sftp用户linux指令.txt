@@ -1,0 +1,35 @@
+1.查看openssh软件版本,想sftp服务用户只能访问特定的文件目录,版本需要4.8以上
+[root@localhost ftp]# rpm -qa | grep openssh
+openssh-server-5.3p1-81.el6_3.x86_64
+openssh-5.3p1-81.el6_3.x86_64
+openssh-clients-5.3p1-81.el6_3.x86_64
+2.新增用户,限制用户只能通过sftp访问
+useradd -m -d /psb/nas/7103500006 -s /sbin/nologin -g sftpusers 7103500006
+
+3.将sftp用户添加到用户组：sftpusers
+useradd -g sftpusers 7103500006
+或更改用户所属组
+usermod -G sftpusers 7103500006
+4.更改用户密码
+passwd 7103500006
+5.更改目录所属用户
+chown -R 7103500006:sftpusers /psb/nas/7103500006
+6.测试连接
+sftp -oPort=9158 7103500006@112.65.144.19
+
+1、建用户：
+adduser phpq                             //新建phpq用户
+passwd phpq                               //给phpq用户设置密码
+
+2、建工作组
+groupadd test                          //新建test工作组
+
+cat /etc/passwd  查看所有用户cd
+
+
+
+useradd -m -d /psb/nas/SH20180154-s /sbin/nologin  SH20180154
+usermod -G sftpusers SH20180154
+chown root:root /psb/nas/SH20180154
+mkdir /psb/nas/SH20180154/file
+chmod 777 /psb/nas/SH20180154/file

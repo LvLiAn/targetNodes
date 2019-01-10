@@ -1,0 +1,77 @@
+vim 文本编辑
+
+
+:w(保存)，:q(退出)，:q!(不保存退出)
+:%s/x/y/g (全局替换 y 换 x)
+CTRL B/F   上翻/下翻
+CTRL E/Y   上滚/下滚
+ZZ/ZQ  保存退出/不保存退出
+
+ll -a 查看所有文件包含隐藏文件
+
+//查看系统中文件的使用情况
+df -h
+//查看当前目录下各个文件及目录占用空间大小
+du -sh *
+
+//方法一：切换到要删除的目录，删除目录下的所有文件
+rm -f *
+
+//方法二：删除logs文件夹下的所有文件，而不删除文件夹本身
+rm -rf log/*
+
+tar -xvf
+
+ssh 链接sftp 
+	sftp -oPort=22 2018040300095501@218.17.35.123
+	sftp -oPort=端口号 用户名@主机
+	在sftp的环境下的操作就和一般ftp的操作类似了，ls,rm,mkdir,dir,pwd,等指令都是对远端进行操作，
+		如果要对本地操作，只需在上述的指令上加‘l’变为：lls,lcd, lpwd等。
+	上传：put /path/filename(本地主机) /path/filename(远端主机)；
+	下载：get /path/filename(远端主机) /path/filename(本地主机)。
+	bye 退出sftp
+	help  帮助
+	
+ls -lrt 文件按顺序排序显示
+
+x,X  : 在一行中，x为向后删除一个字符（相当于del键），X为向前删除一个字符（相当于backspace键）。
+dd   : 删除光标所在的那一整行。
+ndd  : n 为数字。从光标开始，删除向下n列。
+yy   : 复制光标所在的那一行。   
+nyy  : n为数字。复制光标所在的向下n行。
+p,P  : p 为将已复制的数据粘贴到光标的下一行，P则为贴在光标的上一行。
+u    : 复原前一个操作
+CTRL + r : 重做上一个操作。
+小数点'.': 重复前一个动作。
+
+cd tomcat*/bin 
+sh version.sh   查看tomcat版本信息
+
+ 查询openssl软件
+    rpm -qa openssh openssl
+# 查询sshd进程
+    ps -ef | grep ssh
+        --> /usr/sbin/sshd
+# 查看ssh端口
+    netstat -lntup | grep ssh  
+    ss | grep ssh                (效果同上，同下，好用)
+    netstat -a | grep ssh(记住这个)
+    netstat -lnt | grep 22    ==>  查看22端口有没有开/ssh服务有没有开启
+    技巧： netstat -lnt | grep ssh | wc -l -->只要大于2个就是ssh服务就是好的
+# 查看ssh的秘钥目录
+    ll /root/.ssh/known_hosts  # 当前用户家目录的.ssh目录下
+# ssh的配置文件
+    cat /etc/ssh/sshd_config   
+# ssh服务的关闭
+    service sshd stop
+# ssh服务的开启：
+    service sshd start
+# ssh服务的重启
+    service sshd reload    [停止进程后重启] ==> 推荐
+    service sshd restart   [干掉进程后重启] ==> 不推荐
+# ssh远程登录
+    ssh 192.168.1.100      # 默认利用当前宿主用户的用户名登录
+    ssh omd@192.168.1.100  # 利用远程机的用户登录
+    ssh omd@192.168.1.100  -o stricthostkeychecking=no # 首次登陆免输yes登录
+    ssh omd@192.168.1.100 "ls /home/omd"  # 当前服务器A远程登录服务器B后执行某个命令
+    ssh omd@192.168.1.100 -t "sh /home/omd/ftl.sh"  # 当前服务器A远程登录服务器B
