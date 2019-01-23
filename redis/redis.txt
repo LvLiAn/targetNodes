@@ -1,0 +1,5 @@
+redis linux安装
+1、下载地址：http://download.redis.io/releases/ 选择稳定版本 	redis-5.0.0.tar.gz
+2、解压缩	tar -zxvf redis-5.0.0.tar.gz
+3、cd redis-5.0.0    执行make  编译项目，完成之后 make install（将可执行程序复制到/usr/local/bin）以便以后执行程序时可以不用输入完整程序
+4、/opt/redis-5.0.0/src/redis-server 启动redis
